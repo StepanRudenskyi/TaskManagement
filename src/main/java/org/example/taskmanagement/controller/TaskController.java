@@ -1,5 +1,6 @@
 package org.example.taskmanagement.controller;
 
+import org.example.taskmanagement.dto.TaskDto;
 import org.example.taskmanagement.model.Task;
 import org.example.taskmanagement.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,23 +19,23 @@ public class TaskController {
     }
 
     @PostMapping
-    public Task createTask(@RequestBody Task task) {
-        return taskService.createTask(task);
+    public TaskDto createTask(@RequestBody TaskDto taskDto) {
+        return taskService.createTask(taskDto);
     }
 
     @GetMapping
-    public List<Task> getAllTasks() {
+    public List<TaskDto> getAllTasks() {
         return taskService.getAllTask();
     }
 
     @GetMapping("/{taskId}")
-    public Task getTaskById(@PathVariable Long taskId) {
+    public TaskDto getTaskById(@PathVariable Long taskId) {
         return taskService.getTaskById(taskId);
     }
 
     @PutMapping("/{taskId}")
-    public void updateTask(@PathVariable Long taskId, @RequestBody Task updatedTask) {
-        taskService.updateTask(taskId, updatedTask);
+    public void updateTask(@PathVariable Long taskId, @RequestBody TaskDto updatedTaskDto) {
+        taskService.updateTask(taskId, updatedTaskDto);
     }
 
     @DeleteMapping("/{taskId}")
