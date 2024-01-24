@@ -17,11 +17,16 @@ public class Task {
     @Column(name = "description")
     private String description;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private TaskStatus status;
 
     @Column(name = "title")
     private String title;
+
+    @ManyToOne
+    @JoinColumn(name = "developer_id")
+    private Developer developer;
 
     public Task() {
 
