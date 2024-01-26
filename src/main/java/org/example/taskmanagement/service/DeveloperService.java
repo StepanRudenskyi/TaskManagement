@@ -2,11 +2,13 @@ package org.example.taskmanagement.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.example.taskmanagement.dto.DeveloperDto;
+import org.example.taskmanagement.dto.DeveloperNameDto;
 import org.example.taskmanagement.dto.TaskDto;
 import org.example.taskmanagement.mapper.DeveloperMapper;
 import org.example.taskmanagement.mapper.TaskMapper;
 import org.example.taskmanagement.model.Developer;
 import org.example.taskmanagement.model.Task;
+import org.example.taskmanagement.projection.DeveloperNameProjection;
 import org.example.taskmanagement.repository.DeveloperRepository;
 import org.example.taskmanagement.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,17 +113,25 @@ public class DeveloperService {
     }
 
 
-    public List<DeveloperDto> getAllDevelopersWithActiveTasks() {
-        List<Developer> developers = developerRepository.findAllActiveTasks();
-        return developers.stream()
-                .map(developerMapper::toDto)
+    public List<DeveloperNameDto> getAllDevelopersWithActiveTasks() {
+        List<DeveloperNameProjection> projections = developerRepository.findAllActiveTasks();
+        return projections.stream()
+                .map(projection -> {
+                    Developer developer = developerRepository.findById(projection.getId())
+                            .orElseThrow();
+                    return new DeveloperNameDto(developer.getId(), developer.getName(), projection.getActiveTasks());
+                })
                 .toList();
     }
 
-    public List<DeveloperDto> getAllDevelopersWithActiveTasksCount() {
-        List<Developer> tasksCount = developerRepository.findAllDevelopersWithActiveTasksCount();
+    public List<DeveloperNameDto> getAllDevelopersWithActiveTasksCount() {
+        List<DeveloperNameProjection> tasksCount = developerRepository.findAllDevelopersWithActiveTasksCount();
+
         return tasksCount.stream()
-                .map(developerMapper::toDto)
+                .map(projection -> {
+                    Developer developer = developerRepository.findById(projection.getId()).orElseThrow();
+                    return new DeveloperNameDto(developer.getId(), developer.getName(), projection.getActiveTasks());
+                })
                 .toList();
     }
 

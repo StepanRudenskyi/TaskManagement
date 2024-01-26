@@ -1,6 +1,7 @@
 package org.example.taskmanagement.controller;
 
 import org.example.taskmanagement.dto.DeveloperDto;
+import org.example.taskmanagement.dto.DeveloperNameDto;
 import org.example.taskmanagement.dto.TaskDto;
 import org.example.taskmanagement.service.DeveloperService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import java.util.List;
 @RequestMapping("/developers")
 public class DeveloperController {
 
+    // TODO: add documentation
     private final DeveloperService developerService;
 
     @Autowired
@@ -51,12 +53,11 @@ public class DeveloperController {
     }
 
     @GetMapping("/active-tasks")
-    public List<DeveloperDto> getAllDevelopersWithActiveTasks() {
+    public List<DeveloperNameDto> getAllDevelopersWithActiveTasks() {
         return developerService.getAllDevelopersWithActiveTasks();
     }
-
     @GetMapping("/active-task-count")
-    public List<DeveloperDto> getAllDevelopersWithActiveTasksCount() {
+    public List<DeveloperNameDto> getAllDevelopersWithActiveTasksCount() {
         return developerService.getAllDevelopersWithActiveTasksCount();
     }
 
