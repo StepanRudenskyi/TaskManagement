@@ -24,5 +24,6 @@ public interface DeveloperRepository extends JpaRepository<Developer, Long> {
             " GROUP BY d.id, d.name")
     List<DeveloperNameProjection> findAllDevelopersWithActiveTasksCount();
 
+    Developer findByEmail(String email);
 }
 
