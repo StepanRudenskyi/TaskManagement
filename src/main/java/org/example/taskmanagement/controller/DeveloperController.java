@@ -13,7 +13,6 @@ import java.util.List;
 @RequestMapping("/developers")
 public class DeveloperController {
 
-    // TODO: add documentation
     private final DeveloperService developerService;
 
     @Autowired

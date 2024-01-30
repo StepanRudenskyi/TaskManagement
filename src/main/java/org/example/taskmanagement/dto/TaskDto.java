@@ -11,5 +11,7 @@ public class TaskDto {
     private String description;
     private TaskStatus status;
     private String title;
+    public TaskDto() {
 
+    }
 }
