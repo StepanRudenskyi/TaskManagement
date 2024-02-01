@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "taskmanager")
 @Data
-public class ApplicationProperties {
+public class SystemDeveloperProperties {
 
     private String systemDeveloperName;
     private String systemDeveloperEmail;

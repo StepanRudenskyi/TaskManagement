@@ -1,6 +1,7 @@
 package org.example.taskmanagement.service;
 
 import jakarta.persistence.EntityNotFoundException;
+//import javax.persistence.EntityNotFoundException;
 import org.example.taskmanagement.dto.DeveloperDto;
 import org.example.taskmanagement.dto.DeveloperNameDto;
 import org.example.taskmanagement.dto.TaskDto;
@@ -14,6 +15,7 @@ import org.example.taskmanagement.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,12 +37,14 @@ public class DeveloperService {
         this.taskMapper = taskMapper;
     }
 
+    @Transactional
     public DeveloperDto createDeveloper(DeveloperDto developerDto) {
         developerDto.setId(null);
         Developer entity = developerMapper.toEntity(developerDto);
         return developerMapper.toDto(developerRepository.save(entity));
     }
 
+    @Transactional(readOnly = true)
     public DeveloperDto getDeveloperById(Long developerId) {
 
         Optional<Developer> optionalDeveloper = developerRepository.findById(developerId);
@@ -52,6 +56,7 @@ public class DeveloperService {
         }
     }
 
+    @Transactional
     public void updateDeveloper(Long developerId, DeveloperDto updatedDeveloperDto) {
         Optional<Developer> optionalDeveloper = developerRepository.findById(developerId);
 
@@ -67,6 +72,7 @@ public class DeveloperService {
         }
     }
 
+    @Transactional
     public void deleteDeveloper(Long developerId) {
         Optional<Developer> optionalDeveloper = developerRepository.findById(developerId);
 
@@ -78,6 +84,7 @@ public class DeveloperService {
     }
 
     // possibility to create Developer with developer's task via one REST call
+    @Transactional
     public void associateTasksWithDeveloper(Long developerId, List<TaskDto> taskDtos) {
         Optional<Developer> optionalDeveloper = developerRepository.findById(developerId);
 
@@ -96,6 +103,7 @@ public class DeveloperService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<TaskDto> getTaskByDeveloperId(Long developerId) {
         Optional<Developer> optionalDeveloper = developerRepository.findById(developerId);
 
@@ -112,7 +120,7 @@ public class DeveloperService {
         }
     }
 
-
+    @Transactional(readOnly = true)
     public List<DeveloperNameDto> getAllDevelopersWithActiveTasks() {
         List<DeveloperNameProjection> projections = developerRepository.findAllActiveTasks();
         return projections.stream()

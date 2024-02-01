@@ -1,13 +1,17 @@
 package org.example.taskmanagement.service;
 
 
+
 import jakarta.persistence.EntityNotFoundException;
+//import javax.persistence.EntityNotFoundException;
 import org.example.taskmanagement.dto.TaskDto;
 import org.example.taskmanagement.mapper.TaskMapper;
 import org.example.taskmanagement.model.Task;
 import org.example.taskmanagement.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -24,12 +28,14 @@ public class TaskService {
         this.taskMapper = taskMapper;
     }
 
+    @Transactional
     public TaskDto createTask(TaskDto taskDto) {
         taskDto.setId(null);
         Task entity = taskMapper.toEntity(taskDto);
         return taskMapper.toDto(taskRepository.save(entity));
     }
 
+    @Transactional(readOnly = true)
     public List<TaskDto> getAllTask() {
         List<Task> tasks = taskRepository.findAll();
         List<TaskDto> taskDtos = tasks.stream()
@@ -39,6 +45,7 @@ public class TaskService {
         return taskDtos;
     }
 
+    @Transactional(readOnly = true)
     public TaskDto getTaskById(Long taskId) {
         Optional<Task> optionalTask = taskRepository.findById(taskId);
 
@@ -49,6 +56,7 @@ public class TaskService {
         }
     }
 
+    @Transactional
     public void updateTask(Long taskId, TaskDto updatedTaskDto) {
         Optional<Task> existingOptionalTask = taskRepository.findById(taskId);
 
@@ -65,6 +73,7 @@ public class TaskService {
         }
     }
 
+    @Transactional
     public void deleteTask(Long taskId) {
         Optional<Task> optionalTask = taskRepository.findById(taskId);
 
