@@ -2,12 +2,13 @@ package org.example.taskmanagement.model;
 
 
 import jakarta.persistence.*;
-//import javax.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.example.taskmanagement.enums.TaskStatus;
 
 @Data
 @Entity
+@NoArgsConstructor
 public class Task {
 
     @Id
@@ -28,10 +29,6 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "developer_id")
     private Developer developer;
-
-    public Task() {
-
-    }
 
     public Task(String description, TaskStatus status, String title) {
         this.description = description;

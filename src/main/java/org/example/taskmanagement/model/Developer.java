@@ -1,13 +1,14 @@
 package org.example.taskmanagement.model;
 
 import jakarta.persistence.*;
-//import javax.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
 @Entity
+@NoArgsConstructor
 public class Developer {
 
     @Id
@@ -27,9 +28,5 @@ public class Developer {
         this.name = name;
         this.email = email;
         this.tasks = tasks;
-    }
-
-    public Developer() {
-
     }
 }

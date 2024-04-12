@@ -8,8 +8,6 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface DeveloperMapper {
-    public Developer toEntity(DeveloperDto developerDto);
-    public DeveloperDto toDto (Developer developer);
-    TaskDto toTaskDto(Task task);
-
+    Developer toEntity(DeveloperDto developerDto);
+    DeveloperDto toDto (Developer developer);
 }
