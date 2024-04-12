@@ -9,4 +9,5 @@ import org.springframework.stereotype.Component;
 @Data
 public class FlagProperties {
     private boolean saveSysDeveloper = true;
+    private boolean debugModeEnabled = false;
 }
