@@ -21,7 +21,7 @@ public class Developer {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(mappedBy = "developer", cascade = CascadeType.REMOVE, orphanRemoval = false)
+    @OneToMany(mappedBy = "developer", cascade = CascadeType.PERSIST, orphanRemoval = false)
     private List<Task> tasks;
 
     public Developer(String name, String email, List<Task> tasks) {

@@ -5,6 +5,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.example.taskmanagement.dto.DeveloperDto;
 import org.example.taskmanagement.dto.DeveloperNameDto;
 import org.example.taskmanagement.dto.TaskDto;
+import org.example.taskmanagement.enums.TaskStatus;
 import org.example.taskmanagement.mapper.DeveloperMapper;
 import org.example.taskmanagement.mapper.TaskMapper;
 import org.example.taskmanagement.model.Developer;
@@ -19,21 +20,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DeveloperService {
     private final DeveloperMapper developerMapper;
     private final DeveloperRepository developerRepository;
-    private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
 
 
     @Autowired
     public DeveloperService(DeveloperMapper developerMapper, DeveloperRepository developerRepository,
-                            TaskRepository taskRepository, TaskMapper taskMapper) {
+                            TaskMapper taskMapper) {
         this.developerMapper = developerMapper;
         this.developerRepository = developerRepository;
-        this.taskRepository = taskRepository;
         this.taskMapper = taskMapper;
     }
 
@@ -77,31 +77,17 @@ public class DeveloperService {
         Optional<Developer> optionalDeveloper = developerRepository.findById(developerId);
 
         if (optionalDeveloper.isPresent()) {
+            Developer developer = optionalDeveloper.get();
+            List<Task> tasks = developer.getTasks();
+
+            tasks.forEach(task -> task.setDeveloper(null));
+
             developerRepository.deleteById(developerId);
         } else {
             throw new EntityNotFoundException("Developer with ID: " + developerId + " not found");
         }
     }
-
-    // possibility to create Developer with developer's task via one REST call
-    @Transactional
-    public void associateTasksWithDeveloper(Long developerId, List<TaskDto> taskDtos) {
-        Optional<Developer> optionalDeveloper = developerRepository.findById(developerId);
-
-        if (optionalDeveloper.isPresent()) {
-            Developer developer = optionalDeveloper.get();
-
-            List<Task> tasks = taskDtos.stream()
-                    .map(taskMapper::toEntity)
-                    .toList();
-
-            developer.setTasks(tasks);
-            developerRepository.save(developer);
-
-        } else {
-            throw new EntityNotFoundException("Developer with ID: " + developerId + " not found");
-        }
-    }
+    // TODO: possibility to create Developer with developer's task via one REST call
 
     @Transactional(readOnly = true)
     public List<TaskDto> getTaskByDeveloperId(Long developerId) {
@@ -111,10 +97,9 @@ public class DeveloperService {
             Developer developer = optionalDeveloper.get();
             List<Task> tasks = developer.getTasks();
 
-            List<TaskDto> taskDtos = tasks.stream()
+            return tasks.stream()
                     .map(taskMapper::toDto)
                     .toList();
-            return taskDtos;
         } else {
             throw new EntityNotFoundException("Developer with ID: " + developerId + " not found");
         }
@@ -123,15 +108,13 @@ public class DeveloperService {
     @Transactional(readOnly = true)
     public List<DeveloperNameDto> getAllDevelopersWithActiveTasks() {
         List<DeveloperNameProjection> projections = developerRepository.findAllActiveTasks();
+
         return projections.stream()
-                .map(projection -> {
-                    Developer developer = developerRepository.findById(projection.getId())
-                            .orElseThrow();
-                    return new DeveloperNameDto(developer.getId(), developer.getName(), projection.getActiveTasks());
-                })
-                .toList();
+                .map(projection -> new DeveloperNameDto(projection.getId(), projection.getName(), projection.getActiveTasks()))
+                .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<DeveloperNameDto> getAllDevelopersWithActiveTasksCount() {
         List<DeveloperNameProjection> tasksCount = developerRepository.findAllDevelopersWithActiveTasksCount();
 
@@ -142,5 +125,6 @@ public class DeveloperService {
                 })
                 .toList();
     }
+
 
 }
