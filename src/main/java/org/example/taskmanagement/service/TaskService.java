@@ -1,17 +1,16 @@
 package org.example.taskmanagement.service;
 
 
-
 import jakarta.persistence.EntityNotFoundException;
-//import javax.persistence.EntityNotFoundException;
 import org.example.taskmanagement.dto.TaskDto;
 import org.example.taskmanagement.mapper.TaskMapper;
+import org.example.taskmanagement.model.Developer;
 import org.example.taskmanagement.model.Task;
+import org.example.taskmanagement.repository.DeveloperRepository;
 import org.example.taskmanagement.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 import java.util.List;
 import java.util.Optional;
@@ -21,11 +20,14 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
+    private final DeveloperRepository developerRepository;
+
 
     @Autowired
-    public TaskService(TaskRepository taskRepository, TaskMapper taskMapper) {
+    public TaskService(TaskRepository taskRepository, TaskMapper taskMapper, DeveloperRepository developerRepository) {
         this.taskRepository = taskRepository;
         this.taskMapper = taskMapper;
+        this.developerRepository = developerRepository;
     }
 
     @Transactional
@@ -38,11 +40,10 @@ public class TaskService {
     @Transactional(readOnly = true)
     public List<TaskDto> getAllTask() {
         List<Task> tasks = taskRepository.findAll();
-        List<TaskDto> taskDtos = tasks.stream()
-                .map(task -> taskMapper.toDto(task))
-                .toList();
 
-        return taskDtos;
+        return tasks.stream()
+                .map(taskMapper::toDto)
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -82,5 +83,16 @@ public class TaskService {
         } else {
             throw new EntityNotFoundException("Task with ID: " + taskId + " not found");
         }
+    }
+
+    @Transactional
+    public void associateTaskWithDeveloper(Long taskId, Long developerId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new EntityNotFoundException("Task with ID " + taskId + " not found"));
+        Developer developer = developerRepository.findById(developerId)
+                .orElseThrow(() -> new EntityNotFoundException("Developer with ID " + developerId + " not found"));
+
+        task.setDeveloper(developer);
+        taskRepository.save(task);
     }
 }

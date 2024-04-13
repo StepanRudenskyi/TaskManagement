@@ -1,7 +1,6 @@
 package org.example.taskmanagement.controller;
 
 import org.example.taskmanagement.dto.TaskDto;
-import org.example.taskmanagement.model.Task;
 import org.example.taskmanagement.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -41,5 +40,10 @@ public class TaskController {
     @DeleteMapping("/{taskId}")
     public void deleteTask(@PathVariable Long taskId){
         taskService.deleteTask(taskId);
+    }
+
+    @PostMapping("/{taskId}/associate-developer/{developerId}")
+    public void associateTaskWithDeveloper(@PathVariable Long taskId, @PathVariable Long developerId) {
+        taskService.associateTaskWithDeveloper(taskId, developerId);
     }
 }
