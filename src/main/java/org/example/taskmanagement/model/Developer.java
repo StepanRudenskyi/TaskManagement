@@ -21,6 +21,7 @@ public class Developer {
     @Column(name = "email")
     private String email;
 
+    // TODO: implement cascading delete
     @OneToMany(mappedBy = "developer", cascade = CascadeType.PERSIST, orphanRemoval = false)
     private List<Task> tasks;
 
