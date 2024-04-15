@@ -17,12 +17,13 @@ public interface DeveloperRepository extends JpaRepository<Developer, Long> {
     List<DeveloperNameProjection> findAllActiveTasks();
 
     // get all developers with the number of his active tasks
-    @Query(value = "SELECT d.id, d.name, COUNT(t.id) AS activeTasks" +
-            " FROM Developer AS d" +
-            " JOIN Task AS t ON d.id = t.developer.id " +
+    @Query(value = "select d " +
+            " FROM  Developer d LEFT JOIN FETCH d.tasks AS t" +
             " WHERE t.status = 'IN_PROGRESS'" +
-            " GROUP BY d.id, d.name")
-    List<DeveloperNameProjection> findAllDevelopersWithActiveTasksCount();
+            " GROUP BY t.developer.id" + 
+            " HAVING count(t.id) > 0"
+             )
+    List<Developer> findAllDevelopersWithActiveTasksCount();
 
     Developer findByEmail(String email);
 }
