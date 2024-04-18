@@ -118,6 +118,7 @@ public class DeveloperService {
     // TODO: fix
     @Transactional(readOnly = true)
     public List<DeveloperNameDto> getAllDevelopersWithActiveTasksCount() {
+    	/*
         List<DeveloperNameProjection> tasksCount = developerRepository.findAllDevelopersWithActiveTasksCount();
 
         return tasksCount.stream()
@@ -126,6 +127,8 @@ public class DeveloperService {
                     return new DeveloperNameDto(developer.getId(), developer.getName(), projection.getActiveTasks());
                 })
                 .toList();
+                */
+    	return null;
     }
 
 

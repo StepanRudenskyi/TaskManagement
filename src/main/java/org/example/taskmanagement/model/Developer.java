@@ -25,7 +25,7 @@ public class Developer {
     private String email;
 
     // TODO: implement cascading delete
-    @OneToMany(mappedBy = "developer", cascade = CascadeType.PERSIST, orphanRemoval = false)
+    @OneToMany(mappedBy = "developer", cascade = CascadeType.PERSIST, orphanRemoval = false,fetch = FetchType.LAZY)
     private List<Task> tasks;
 
     public Developer(String name, String email, List<Task> tasks) {
